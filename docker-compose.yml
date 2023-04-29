@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  clamav:
+    image: clamav/clamav:latest
+    ports:
+      - "3310:3310"
+    volumes:
+      - clamav-dev:/var/lib/clamav # Virus database
+      - ./docker/clamav/config/clamd.conf:/etc/clamav/clamd.conf
+      - ./docker/clamav/config/freshclam.conf:/etc/clamav/freshclam.conf
+
+volumes:
+  clamav-dev:
+
+networks:
+  ruby-clamdscan:
+    external: true
+    name: ruby-clamdscan
