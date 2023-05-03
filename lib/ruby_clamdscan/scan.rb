@@ -53,7 +53,7 @@ module RubyClamdscan
       # Malware response: "stream: Win.Test.EICAR_HDB-1 FOUND"
       # Error response "stream: <message> ERROR"
 
-      response = response.strip
+      response = response.strip # Strip out any trailing empty chars from the buffer
       tokens = response.split(" ")
       print(tokens)
 
@@ -61,7 +61,7 @@ module RubyClamdscan
       in ["stream:", "OK"]
         RubyClamdscan::Structs::ClamscanResult.new(is_successful: true, contains_virus: false)
       in ["stream:", virus_info, "FOUND"]
-        RubyClamdscan::Structs::ClamscanResult.new(is_successful: true, contains_virus: true, virus_info:)
+        RubyClamdscan::Structs::ClamscanResult.new(is_successful: true, contains_virus: true, virus_info: virus_info)
       else
         RubyClamdscan::Structs::ClamscanResult.new(is_successful: false, contains_virus: false, error: response)
       end
