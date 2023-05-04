@@ -3,8 +3,7 @@
 require "ruby_clamdscan/socket"
 require "ruby_clamdscan/scan"
 require "ruby_clamdscan/configuration"
-
-require_relative "ruby_clamdscan/version"
+require "ruby_clamdscan/version"
 
 # Utility for interacting with ClamAV
 module RubyClamdscan

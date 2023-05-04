@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "socket"
-require "ruby_clamdscan/structs/clamscan_result"
+require "ruby_clamdscan/models/clamscan_result"
 
 module RubyClamdscan
   # Methods for scanning filecontents
@@ -9,7 +9,7 @@ module RubyClamdscan
     # Stream file contents to ClamAV
     # @param file_input_stream [IO] Input file_input_stream to scan
     # @param clam_av_stream [IO] Connection to ClamAV service
-    # @return [RubyClamdscan::Structs::ClamscanResult]
+    # @return [RubyClamdscan::Models::ClamscanResult]
     def self.scan(file_input_stream, clam_av_stream)
       response = ""
 
@@ -47,7 +47,7 @@ module RubyClamdscan
 
     # Builds a result object after parsing the response from ClamAV
     # @param response [String] Response from ClamAV stream
-    # @return [RubyClamdscan::Structs::ClamscanResult] Constructed result object
+    # @return [RubyClamdscan::Models::ClamscanResult] Constructed result object
     def self.build_result(response)
       # OK response: "stream: OK"
       # Malware response: "stream: Win.Test.EICAR_HDB-1 FOUND"
@@ -55,15 +55,14 @@ module RubyClamdscan
 
       response = response.strip # Strip out any trailing empty chars from the buffer
       tokens = response.split(" ")
-      print(tokens)
 
       case tokens
       in ["stream:", "OK"]
-        RubyClamdscan::Structs::ClamscanResult.new(is_successful: true, contains_virus: false)
+        RubyClamdscan::Models::ClamscanResult.new(is_successful: true, contains_virus: false)
       in ["stream:", virus_info, "FOUND"]
-        RubyClamdscan::Structs::ClamscanResult.new(is_successful: true, contains_virus: true, virus_info: virus_info)
+        RubyClamdscan::Models::ClamscanResult.new(is_successful: true, contains_virus: true, virus_info:)
       else
-        RubyClamdscan::Structs::ClamscanResult.new(is_successful: false, contains_virus: false, error: response)
+        RubyClamdscan::Models::ClamscanResult.new(is_successful: false, contains_virus: false, error: response)
       end
     end
   end
