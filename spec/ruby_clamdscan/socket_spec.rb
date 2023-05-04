@@ -5,11 +5,9 @@ require "ruby_clamdscan/socket"
 require "socket"
 
 RSpec.describe RubyClamdscan::Socket do
-
   let(:configuration) { RubyClamdscan::Configuration.new }
 
   describe ".open_clamav_socket" do
-
     subject { RubyClamdscan::Socket.open_clamav_socket(configuration) }
 
     context "When opening a TCP Socket" do

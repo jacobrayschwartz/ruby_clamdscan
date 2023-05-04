@@ -9,14 +9,15 @@ module RubyClamdscan
     # Stream file contents to ClamAV
     # @param file_input_stream [IO] Input file_input_stream to scan
     # @param clam_av_stream [IO] Connection to ClamAV service
+    # @param configuration [RubyClamdscan::Configuration] Configuration settings
     # @return [RubyClamdscan::Models::ClamscanResult]
-    def self.scan(file_input_stream, clam_av_stream)
+    def self.scan(file_input_stream, clam_av_stream, configuration)
       response = ""
 
       begin
         clam_av_stream.write("zINSTREAM\0") # Write the command to tell ClamAV to start scanning
         clam_av_stream.flush
-        while (chunk = file_input_stream.read(RubyClamdscan.configuration.chunk_size))
+        while (chunk = file_input_stream.read(configuration.chunk_size))
           # puts chunk
           # puts chunk.length
           chunk_len = [chunk.length].pack("N")
@@ -39,10 +40,17 @@ module RubyClamdscan
     # Stream file contents to ClamAV
     # @param file_input_stream [IO] Input file_input_stream to scan
     # @param filepath [String] Path to file in local storage to scan
-    def self.scan_file(filepath, clam_av_stream)
-      fd = IO.sysopen(filepath, "rb")
-      fin = IO.new(fd)
-      scan(fin, clam_av_stream)
+    # @param configuration [RubyClamdscan::Configuration] Configuration settings
+    # @return [RubyClamdscan::Models::ClamscanResult]
+    def self.scan_file(filepath, clam_av_stream, configuration)
+      begin
+        fd = IO.sysopen(filepath, "rb")
+        fin = IO.new(fd)
+        result = scan(fin, clam_av_stream, configuration)
+      ensure
+        fin.close
+      end
+      result
     end
 
     # Builds a result object after parsing the response from ClamAV
@@ -65,5 +73,7 @@ module RubyClamdscan
         RubyClamdscan::Models::ClamscanResult.new(is_successful: false, contains_virus: false, error: response)
       end
     end
+
+    private_class_method :build_result
   end
 end

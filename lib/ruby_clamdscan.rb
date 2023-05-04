@@ -24,16 +24,15 @@ module RubyClamdscan
     end
 
     def scan_file_from_path(filepath)
-      fd = IO.sysopen(filepath, "rb")
-      fin = IO.new(fd)
-      scan_contents(fin)
+      socket = RubyClamdscan::Socket.open_clamav_socket(@configuration)
+      RubyClamdscan::Scan.scan_file(filepath, socket, @configuration)
     end
 
     # Scans the contents of the stream passed in
     # @param stream [IO] stream of file contents
     def scan_contents(stream)
-      socket = RubyClamdscan::Socket.open_clamav_socket
-      RubyClamdscan::Scan.scan(stream, socket)
+      socket = RubyClamdscan::Socket.open_clamav_socket(@configuration)
+      RubyClamdscan::Scan.scan(stream, socket, @configuration)
     end
   end
 end
