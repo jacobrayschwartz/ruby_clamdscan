@@ -11,7 +11,7 @@ RSpec.describe RubyClamdscan::Socket do
     subject { RubyClamdscan::Socket.open_clamav_socket(configuration) }
 
     context "When opening a TCP Socket" do
-      before(:each) do
+      before do
         configuration.use_tcp_socket = true
       end
 
@@ -22,7 +22,7 @@ RSpec.describe RubyClamdscan::Socket do
     end
 
     context "When opening a Unix Socket" do
-      before(:each) do
+      before do
         configuration.use_tcp_socket = false
       end
 

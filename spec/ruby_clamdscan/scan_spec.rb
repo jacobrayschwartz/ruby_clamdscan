@@ -5,6 +5,8 @@ require "ruby_clamdscan/socket"
 require "ruby_clamdscan/scan"
 RSpec.describe RubyClamdscan::Scan do
   describe ".scan" do
+    subject { RubyClamdscan::Scan.scan(nil, configuration) }
+
     let(:result_content) { "" }
     let(:configuration) { RubyClamdscan::Configuration.new }
     let(:mock_socket) { true }
@@ -12,15 +14,13 @@ RSpec.describe RubyClamdscan::Scan do
     let(:mock_get_response) { true }
     let(:mock_close) { true }
 
-    before(:each) do
+    before do
       socket = double
       expect(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_return(socket) if mock_socket
       expect(RubyClamdscan::Scan).to receive(:send_contents) if mock_send
       expect(RubyClamdscan::Scan).to receive(:get_response).and_return(result_content) if mock_get_response
       expect(socket).to receive(:close) if mock_close
     end
-
-    subject { RubyClamdscan::Scan.scan(nil, configuration) }
 
     context "ClamAV responds with OK" do
       let(:result_content) { "stream: OK\u0000" }
@@ -69,7 +69,7 @@ RSpec.describe RubyClamdscan::Scan do
         let(:mock_get_response) { false }
         let(:mock_close) { false }
 
-        before(:each) do
+        before do
           expect(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_raise(exception)
         end
 
@@ -80,7 +80,7 @@ RSpec.describe RubyClamdscan::Scan do
         let(:mock_send) { false }
         let(:mock_get_response) { false }
 
-        before(:each) do
+        before do
           expect(RubyClamdscan::Scan).to receive(:send_contents).and_raise(exception)
         end
 
@@ -90,7 +90,7 @@ RSpec.describe RubyClamdscan::Scan do
       context "get_response raises error" do
         let(:mock_get_response) { false }
 
-        before(:each) do
+        before do
           expect(RubyClamdscan::Scan).to receive(:get_response).and_raise(exception)
         end
 
