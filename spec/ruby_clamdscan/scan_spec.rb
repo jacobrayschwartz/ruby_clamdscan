@@ -4,7 +4,6 @@ require "ruby_clamdscan/configuration"
 require "ruby_clamdscan/socket"
 require "ruby_clamdscan/scan"
 RSpec.describe RubyClamdscan::Scan do
-
   describe ".scan" do
     let(:result_content) { "" }
     let(:configuration) { RubyClamdscan::Configuration.new }
@@ -57,14 +56,14 @@ RSpec.describe RubyClamdscan::Scan do
       let(:message) { "some error message" }
       let(:exception) { StandardError.new(message) }
 
-      shared_examples 'returns an error response' do
-        it 'returns the appropriate error response' do
+      shared_examples "returns an error response" do
+        it "returns the appropriate error response" do
           expect(subject.exception).to be_an_instance_of(exception.class)
           expect(subject.error_message).to eq(message)
         end
       end
 
-      context 'scan raises error' do
+      context "scan raises error" do
         let(:mock_socket) { false }
         let(:mock_send) { false }
         let(:mock_get_response) { false }
@@ -74,10 +73,10 @@ RSpec.describe RubyClamdscan::Scan do
           expect(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_raise(exception)
         end
 
-        it_behaves_like 'returns an error response'
+        it_behaves_like "returns an error response"
       end
 
-      context 'send raises error' do
+      context "send raises error" do
         let(:mock_send) { false }
         let(:mock_get_response) { false }
 
@@ -85,17 +84,17 @@ RSpec.describe RubyClamdscan::Scan do
           expect(RubyClamdscan::Scan).to receive(:send_contents).and_raise(exception)
         end
 
-        it_behaves_like 'returns an error response'
+        it_behaves_like "returns an error response"
       end
 
-      context 'get_response raises error' do
+      context "get_response raises error" do
         let(:mock_get_response) { false }
 
         before(:each) do
           expect(RubyClamdscan::Scan).to receive(:get_response).and_raise(exception)
         end
 
-        it_behaves_like 'returns an error response'
+        it_behaves_like "returns an error response"
       end
     end
   end
