@@ -23,16 +23,18 @@ module RubyClamdscan
       yield(configuration)
     end
 
+    # Scans a file
+    # @param filepath [String] Path to file in local storage
+    # @return [RubyClamdscan::Models::ClamscanResult] Result from the scan attempt
     def scan_file_from_path(filepath)
-      socket = RubyClamdscan::Socket.open_clamav_socket(@configuration)
-      RubyClamdscan::Scan.scan_file(filepath, socket, @configuration)
+      RubyClamdscan::Scan.scan_file(filepath, @configuration)
     end
 
     # Scans the contents of the stream passed in
     # @param stream [IO] stream of file contents
+    # @return [RubyClamdscan::Models::ClamscanResult] Result from the scan attempt
     def scan_contents(stream)
-      socket = RubyClamdscan::Socket.open_clamav_socket(@configuration)
-      RubyClamdscan::Scan.scan(stream, socket, @configuration)
+      RubyClamdscan::Scan.scan(stream, @configuration)
     end
   end
 end
