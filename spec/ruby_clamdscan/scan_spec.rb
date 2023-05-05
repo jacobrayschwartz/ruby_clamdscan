@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/ExpectInHook
+
 require "ruby_clamdscan/configuration"
 require "ruby_clamdscan/socket"
 require "ruby_clamdscan/scan"
 RSpec.describe RubyClamdscan::Scan do
   describe ".scan" do
-    subject { RubyClamdscan::Scan.scan(nil, configuration) }
+    subject(:scan_result) { described_class.scan(nil, configuration) }
 
     let(:result_content) { "" }
     let(:configuration) { RubyClamdscan::Configuration.new }
@@ -16,82 +18,100 @@ RSpec.describe RubyClamdscan::Scan do
 
     before do
       socket = double
-      expect(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_return(socket) if mock_socket
-      expect(RubyClamdscan::Scan).to receive(:send_contents) if mock_send
-      expect(RubyClamdscan::Scan).to receive(:get_response).and_return(result_content) if mock_get_response
+      allow(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_return(socket) if mock_socket
+      expect(described_class).to receive(:send_contents) if mock_send
+      allow(described_class).to receive(:get_response).and_return(result_content) if mock_get_response
       expect(socket).to receive(:close) if mock_close
     end
 
-    context "ClamAV responds with OK" do
+    context "when ClamAV responds with OK" do
       let(:result_content) { "stream: OK\u0000" }
 
       it "returns a successful result" do
-        expect(subject.is_successful).to be_truthy
+        expect(scan_result.is_successful).to be_truthy
       end
     end
 
-    context "ClamAV responds with a virus" do
+    context "when ClamAV responds with a virus" do
       let(:virus_name) { "rspec.virus" }
       let(:result_content) { "stream: #{virus_name} FOUND\u0000" }
 
-      it "returns a virus found result" do
-        expect(subject.is_successful).to be_truthy
-        expect(subject.contains_virus).to be_truthy
-        expect(subject.virus_info).to eq(virus_name)
+      it "returns a successful result" do
+        expect(scan_result.is_successful).to be_truthy
+      end
+
+      it "returns true for contains_virus" do
+        expect(scan_result.contains_virus).to be_truthy
+      end
+
+      it "returns the virus info" do
+        expect(scan_result.virus_info).to eq(virus_name)
       end
     end
 
-    context "ClamAV responds with anything else" do
+    context "when ClamAV responds with anything else" do
       let(:result_content) { "blah blah blah\u0000" }
 
-      it "returns a virus found result" do
-        expect(subject.is_successful).to be_falsey
-        expect(subject.contains_virus).to be_nil
-        expect(subject.virus_info).to be_nil
-        expect(subject.error_message).to match(/blah blah blah/)
+      it "returns an unsuccssful result" do
+        expect(scan_result.is_successful).to be_falsey
+      end
+
+      it "returns nil for contains_virus" do
+        expect(scan_result.contains_virus).to be_nil
+      end
+
+      it "returns nil for virus result" do
+        expect(scan_result.virus_info).to be_nil
+      end
+
+      it "returns the error message" do
+        expect(scan_result.error_message).to match(/blah blah blah/)
       end
     end
 
-    context "Some exception gets thrown during the scan process" do
+    context "when some exception gets thrown during the scan process" do
       let(:message) { "some error message" }
       let(:exception) { StandardError.new(message) }
 
       shared_examples "returns an error response" do
-        it "returns the appropriate error response" do
-          expect(subject.exception).to be_an_instance_of(exception.class)
-          expect(subject.error_message).to eq(message)
+        it "returns the appropriate exception" do
+          expect(scan_result.exception).to be_an_instance_of(exception.class)
+        end
+
+        it "returns the appropriate error message" do
+          expect(scan_result.error_message).to eq(message)
         end
       end
 
-      context "scan raises error" do
+      context "when scan raises error" do
         let(:mock_socket) { false }
         let(:mock_send) { false }
         let(:mock_get_response) { false }
         let(:mock_close) { false }
 
         before do
-          expect(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_raise(exception)
+          allow(RubyClamdscan::Socket).to receive(:open_clamav_socket).and_raise(exception)
         end
 
         it_behaves_like "returns an error response"
       end
 
-      context "send raises error" do
+      context "when send raises error" do
         let(:mock_send) { false }
         let(:mock_get_response) { false }
 
         before do
-          expect(RubyClamdscan::Scan).to receive(:send_contents).and_raise(exception)
+          allow(described_class).to receive(:send_contents).and_raise(exception)
         end
 
         it_behaves_like "returns an error response"
       end
 
-      context "get_response raises error" do
+      context "when get_response raises error" do
         let(:mock_get_response) { false }
 
         before do
-          expect(RubyClamdscan::Scan).to receive(:get_response).and_raise(exception)
+          allow(described_class).to receive(:get_response).and_raise(exception)
         end
 
         it_behaves_like "returns an error response"
@@ -99,3 +119,5 @@ RSpec.describe RubyClamdscan::Scan do
     end
   end
 end
+
+# rubocop:enable RSpec/ExpectInHook

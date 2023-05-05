@@ -8,6 +8,9 @@ AllCops:
     - 'spec/spec_helper.rb'
     - 'bin/*'
 
+RSpec/MessageSpies:
+  Enabled: false
+
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: double_quotes
@@ -25,3 +28,8 @@ Metrics/BlockLength:
 Layout/LineLength:
   Max: 150
 
+RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
