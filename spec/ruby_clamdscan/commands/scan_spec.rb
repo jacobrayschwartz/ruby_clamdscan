@@ -4,8 +4,9 @@
 
 require "ruby_clamdscan/configuration"
 require "ruby_clamdscan/socket"
-require "ruby_clamdscan/scan"
-RSpec.describe RubyClamdscan::Scan do
+require "ruby_clamdscan/commands/scan"
+
+RSpec.describe RubyClamdscan::Commands::Scan do
   describe ".scan" do
     subject(:scan_result) { described_class.scan(nil, configuration) }
 

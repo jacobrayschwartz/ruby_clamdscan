@@ -27,14 +27,14 @@ module RubyClamdscan
     # @param filepath [String] Path to file in local storage
     # @return [RubyClamdscan::Models::ClamscanResult] Result from the scan attempt
     def scan_file_from_path(filepath)
-      RubyClamdscan::Scan.scan_file(filepath, @configuration)
+      RubyClamdscan::Commands::Scan.scan_file(filepath, @configuration)
     end
 
     # Scans the contents of the stream passed in
     # @param stream [IO] stream of file contents
     # @return [RubyClamdscan::Models::ClamscanResult] Result from the scan attempt
     def scan_contents(stream)
-      RubyClamdscan::Scan.scan(stream, @configuration)
+      RubyClamdscan::Commands::Scan.scan(stream, @configuration)
     end
   end
 end
