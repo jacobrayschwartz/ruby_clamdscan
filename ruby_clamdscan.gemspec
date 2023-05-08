@@ -7,18 +7,19 @@ Gem::Specification.new do |spec|
   spec.version = RubyClamdscan::VERSION
   spec.authors = ["Jacob Schwartz"]
   spec.email = ["jacob.ray.schwartz@gmail.com"]
+  spec.homepage = "https://jacobrayschwartz.com"
 
   spec.summary = "Wrapper around TCP socket communication with a clamd instance"
-  spec.description = "Wrapper around TCP socket communication with a clamd instance"
+  spec.description = "Implements most commands for clamdscan using socket communcation so that you don't need " \
+                      "ClamAV or clamdscan installed on the same host as your service"
   # spec.homepage = "TODO: Put your gem's website or public repo URL here."
-  spec.license = "MIT"
+  spec.license = "GPL-2.0"
   spec.required_ruby_version = ">= 3.1.0"
 
-  # spec.metadata["allowed_push_host"] = "TODO: Set to your gem server 'https://example.com'"
 
-  # spec.metadata["homepage_uri"] = spec.homepage
-  # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
-  # spec.metadata["changelog_uri"] = "TODO: Put your gem's CHANGELOG.md URL here."
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/jacobrayschwartz/ruby_clamdscan"
+  spec.metadata["changelog_uri"] = "https://github.com/jacobrayschwartz/ruby_clamdscan/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
