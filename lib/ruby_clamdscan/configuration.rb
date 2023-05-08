@@ -41,6 +41,7 @@ module RubyClamdscan
     attr_accessor :raise_error_on_virus_detected
 
     def initialize
+      @use_tcp_socket = false
       @tcp_host = "localhost"
       @tcp_port = 3310
       @chunk_size = 1024

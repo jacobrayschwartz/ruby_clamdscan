@@ -8,6 +8,8 @@ module RubyClamdscan
     module Status
       # Attempts to ping the ClamAV server
       # @param configuration [RubyClamdscan::Configuration] configuration for building the ClamAV connection
+      # @return [String] "PONG"
+      # @raise [RubyClamdscan::Errors::ClamAVCommunicationError] if communication with ClamAV server fails
       # @raise [RubyClamdscan::Exceptions::EmptyResponseError] If server response is empty
       def self.ping_server(configuration)
         RubyClamdscan::Commands::Utils.send_single_command("PING", configuration)
@@ -15,6 +17,8 @@ module RubyClamdscan
 
       # Attempts to retrieve the ClamAV server's version information
       # @param configuration [RubyClamdscan::Configuration] configuration for building the ClamAV connection
+      # @return [String] Server information
+      # @raise [RubyClamdscan::Errors::ClamAVCommunicationError] if communication with ClamAV server fails
       # @raise [RubyClamdscan::Exceptions::EmptyResponseError] If server response is empty
       def self.server_version(configuration)
         RubyClamdscan::Commands::Utils.send_single_command("VERSION", configuration)
@@ -27,6 +31,7 @@ module RubyClamdscan
       # @return [String] Format (currently):
       # "POOLS: 1\n\nSTATE: VALID PRIMARY\nTHREADS: live 1  idle 0 max 10 idle-timeout 30\nQUEUE: 0 items\n\tSTATS 0.000375 \n\n
       # MEMSTATS: heap N/A mmap N/A used N/A free N/A releasable N/A pools 1 pools_used 1281.773M pools_total 1281.827M\nEND"
+      # @raise [RubyClamdscan::Errors::ClamAVCommunicationError] if communication with ClamAV server fails
       # @raise [RubyClamdscan::Errors::EmptyResponseError] If server response is empty
       def self.server_stats(configuration)
         RubyClamdscan::Commands::Utils.send_single_command("nSTATS\n", configuration)

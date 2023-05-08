@@ -12,7 +12,7 @@ module RubyClamdscan
       # @return [String] Response from ClamAV server
       # @raise [RubyClamdscan::Errors::EmptyResponseError] if configuration.raise_error_on_empty_response is true and server doesn't send response
       # @raise
-      def self.send_single_command(command, configuration)
+      def self.send_single_command(command, configuration, ignore_empty_response: false)
         response = ""
         begin
           clam_av_stream = RubyClamdscan::Socket.open_clamav_socket(configuration)
@@ -30,7 +30,10 @@ module RubyClamdscan
           clam_av_stream&.close
         end
 
-        raise RubyClamdscan::Errors::EmptyResponseError, command if configuration.raise_error_on_empty_response && response.empty?
+        if !ignore_empty_response && configuration.raise_error_on_empty_response && response.empty?
+          raise RubyClamdscan::Errors::EmptyResponseError,
+                command
+        end
 
         response
       end
