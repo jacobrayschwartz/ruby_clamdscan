@@ -29,11 +29,24 @@ module RubyClamdscan
     # @return [Boolean]
     attr_accessor :use_tcp_socket
 
+    # If the server responds with an empty string, raise an error instead of just returning the empty string
+    # Default: true
+    # @return [Boolean]
+    attr_accessor :raise_error_on_empty_response
+
+    # If a virus is detected in the scanned contents, raise an error
+    # RubyClamdscan::Commands::Scan methods will raise RubyClamdscan::Errors::VirusDetected
+    # Default: true
+    # @return [Boolean]
+    attr_accessor :raise_error_on_virus_detected
+
     def initialize
       @tcp_host = "localhost"
       @tcp_port = 3310
       @chunk_size = 1024
       @unix_socket = "/tmp/clamd.socket"
+      @raise_error_on_empty_response = true
+      @raise_error_on_virus_detected = true
     end
   end
 end

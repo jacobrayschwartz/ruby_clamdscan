@@ -3,7 +3,7 @@
 module RubyClamdscan
   module Models
     # Represents the result from scanning a file with ClamAV
-    class ClamscanResult
+    class ScanResult
       # If the command successfully - does not indicate file was safe! Check contains_virus for that information
       # @return [Boolean]
       attr_reader :is_successful
@@ -32,6 +32,10 @@ module RubyClamdscan
         @error_message = error_message
         @virus_info = virus_info
       end
+    end
+
+    class StatsResult
+      attr_reader :total_pools, :state, :threads_live, :threads_idle, :threads_max
     end
   end
 end
